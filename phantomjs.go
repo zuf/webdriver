@@ -47,6 +47,7 @@ func NewPhantomJsDriver(path string) *PhantomJsDriver {
 	d.BaseUrl = ""
 	d.Threads = 4
 	d.LogPath = "phantomJsdriver.log"
+	d.LogFile = "phantomJsOutput.log"
 	d.StartTimeout = 20 * time.Second
 	return d
 }
