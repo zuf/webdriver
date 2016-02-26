@@ -19,21 +19,21 @@ type PhantomJsSwitches map[string]interface{}
 type PhantomJsDriver struct {
 	WebDriverCore
 	//The port that PhantomJsDriver listens on. Default: 9515
-	Port         int
+	Port int
 	//The URL path prefix to use for all incoming WebDriver REST requests. Default: ""
-	BaseUrl      string
+	BaseUrl string
 	//The number of threads to use for handling HTTP requests. Default: 4
-	Threads      int
+	Threads int
 	//The path to use for the PhantomJsDriver server log. Default: ./phantomJsdriver.log
-	LogPath      string
+	LogPath string
 	// Log file to dump phantomJsdriver stdout/stderr. If "" send to terminal. Default: ""
-	LogFile      string
+	LogFile string
 	// Start method fails if PhantomJsdriver doesn't start in less than StartTimeout. Default 20s.
 	StartTimeout time.Duration
 
-	path         string
-	cmd          *exec.Cmd
-	logFile      *os.File
+	path    string
+	cmd     *exec.Cmd
+	logFile *os.File
 }
 
 //create a new service using phantomJsdriver.
@@ -59,7 +59,7 @@ func (d *PhantomJsDriver) Start() error {
 
 	if d.LogPath != "" {
 		//check if log-path is writable
-		file, err := os.OpenFile(d.LogPath, os.O_WRONLY | os.O_CREATE, 0664)
+		file, err := os.OpenFile(d.LogPath, os.O_WRONLY|os.O_CREATE, 0664)
 		if err != nil {
 			return errors.New(csferr + "unable to write in log path: " + err.Error())
 		}
@@ -68,8 +68,8 @@ func (d *PhantomJsDriver) Start() error {
 
 	d.url = fmt.Sprintf("http://127.0.0.1:%d%s", d.Port, d.BaseUrl)
 	var switches []string
-	switches = append(switches, "--webdriver=" + strconv.Itoa(d.Port))
-	switches = append(switches, "--webdriver-logfile=" + d.LogPath)
+	switches = append(switches, "--webdriver="+strconv.Itoa(d.Port))
+	switches = append(switches, "--webdriver-logfile="+d.LogPath)
 	switches = append(switches, "--webdriver-loglevel=DEBUG")
 
 	d.cmd = exec.Command(d.path, switches...)
