@@ -8,7 +8,7 @@ This is a pure go library and doesn't require a running Selenium driver. It curr
 Tests are partial and have been run only on Linux (with firefox webdriver 2.32.0 and chromedriver 2.1).
 
 **Install:**  
-$ go get github.com/fedesog/webdriver
+$ go get github.com/bborbe/webdriver
 
 **Requires:**
 * chromedriver (for chrome):  
