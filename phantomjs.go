@@ -10,7 +10,6 @@ import (
 	"io"
 	"os"
 	"os/exec"
-	"strconv"
 	"time"
 )
 
@@ -30,6 +29,10 @@ type PhantomJsDriver struct {
 	LogFile string
 	// Start method fails if PhantomJsdriver doesn't start in less than StartTimeout. Default 20s.
 	StartTimeout time.Duration
+	// Host. Default 127.0.0.1
+	Host string
+	// LogLevel. Default DEBUG
+	LogLevel string
 
 	path    string
 	cmd     *exec.Cmd
@@ -44,10 +47,12 @@ func NewPhantomJsDriver(path string) *PhantomJsDriver {
 	d := &PhantomJsDriver{}
 	d.path = path
 	d.Port = 0
+	d.Host = "127.0.0.1"
 	d.BaseUrl = ""
 	d.Threads = 4
 	d.LogPath = "phantomJsdriver.log"
 	d.LogFile = "phantomJsOutput.log"
+	d.LogLevel = "DEBUG"
 	d.StartTimeout = 20 * time.Second
 	return d
 }
@@ -75,11 +80,11 @@ func (d *PhantomJsDriver) Start() error {
 		file.Close()
 	}
 
-	d.url = fmt.Sprintf("http://127.0.0.1:%d%s", d.Port, d.BaseUrl)
+	d.url = fmt.Sprintf("http://%s:%d%s", d.Host, d.Port, d.BaseUrl)
 	var switches []string
-	switches = append(switches, "--webdriver="+strconv.Itoa(d.Port))
-	switches = append(switches, "--webdriver-logfile="+d.LogPath)
-	switches = append(switches, "--webdriver-loglevel=DEBUG")
+	switches = append(switches, fmt.Sprintf("--webdriver=%s:%d", d.Host, d.Port))
+	switches = append(switches, fmt.Sprintf("--webdriver-logfile=%s", d.LogPath))
+	switches = append(switches, fmt.Sprintf("--webdriver-loglevel=%s", d.LogLevel))
 
 	d.cmd = exec.Command(d.path, switches...)
 	stdout, err := d.cmd.StdoutPipe()
