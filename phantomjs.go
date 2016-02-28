@@ -43,7 +43,7 @@ type PhantomJsDriver struct {
 func NewPhantomJsDriver(path string) *PhantomJsDriver {
 	d := &PhantomJsDriver{}
 	d.path = path
-	d.Port = 9515
+	d.Port = 0
 	d.BaseUrl = ""
 	d.Threads = 4
 	d.LogPath = "phantomJsdriver.log"
@@ -53,6 +53,10 @@ func NewPhantomJsDriver(path string) *PhantomJsDriver {
 }
 
 func (d *PhantomJsDriver) Start() error {
+	if d.Port == 0 {
+		d.Port = GetFreePort()
+	}
+
 	csferr := "phantomJsdriver start failed: "
 	if d.cmd != nil {
 		return errors.New(csferr + "phantomJsdriver already running")

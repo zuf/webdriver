@@ -67,33 +67,10 @@ func (d *FirefoxDriver) SetLogPath(path string) {
 }
 
 func (d *FirefoxDriver) Start() error {
-	if d.Port == 0 { //otherwise try to use that port
-		d.Port = 7055
-		lockPortAddress := fmt.Sprintf("127.0.0.1:%d", d.Port-1)
-		now := time.Now()
-		//try to lock port d.Port - 1
-		for {
-			if ln, err := net.Listen("tcp", lockPortAddress); err == nil {
-				defer ln.Close()
-				break
-			}
-			if time.Since(now) > d.LockPortTimeout {
-				return errors.New("timeout expired trying to lock mutex port")
-			}
-			time.Sleep(1 * time.Second)
-		}
-		//find the first available port starting with d.Port
-		for i := d.Port; i < 65535; i++ {
-			address := fmt.Sprintf("127.0.0.1:%d", i)
-			if ln, err := net.Listen("tcp", address); err == nil {
-				if err = ln.Close(); err != nil {
-					return err
-				}
-				d.Port = i
-				break
-			}
-		}
+	if d.Port == 0 {
+		d.Port = GetFreePort()
 	}
+
 	//start firefox with custom profile
 	//TODO it should be possible to use an existing profile
 	d.Prefs["webdriver_firefox_port"] = d.Port

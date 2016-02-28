@@ -43,7 +43,7 @@ type ChromeDriver struct {
 func NewChromeDriver(path string) *ChromeDriver {
 	d := &ChromeDriver{}
 	d.path = path
-	d.Port = 9515
+	d.Port = 0
 	d.BaseUrl = ""
 	d.Threads = 4
 	d.LogPath = "chromedriver.log"
@@ -56,6 +56,10 @@ var switchesFormat = "-port=%d -url-base=%s -log-path=%s -http-threads=%d"
 var cmdchan = make(chan error)
 
 func (d *ChromeDriver) Start() error {
+	if d.Port == 0 {
+		d.Port = GetFreePort()
+	}
+
 	csferr := "chromedriver start failed: "
 	if d.cmd != nil {
 		return errors.New(csferr + "chromedriver already running")
