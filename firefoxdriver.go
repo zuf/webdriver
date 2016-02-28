@@ -21,23 +21,23 @@ import (
 type FirefoxDriver struct {
 	WebDriverCore
 	// The port firefox webdriver listens on. This port - 1 will be used as a mutex to avoid starting multiple firefox instances listening to the same port. Default: 7055
-	Port                 int
+	Port int
 	// Start method fails if lock (see Port) is not acquired before LockPortTimeout. Default 60s
-	LockPortTimeout      time.Duration
+	LockPortTimeout time.Duration
 	// Start method fails if Firefox doesn't start in less than StartTimeout. Default 20s.
-	StartTimeout         time.Duration
+	StartTimeout time.Duration
 	// Log file to dump firefox stdout/stderr. If "" send to terminal. Default: ""
-	LogFile              string
+	LogFile string
 	// Firefox preferences. Default: see method GetDefaultPrefs
-	Prefs                map[string]interface{}
+	Prefs map[string]interface{}
 	// If temporary profile has to be deleted when closing. Default: true
 	DeleteProfileOnClose bool
 
-	firefoxPath          string
-	xpiPath              string
-	profilePath          string
-	cmd                  *exec.Cmd
-	logFile              *os.File
+	firefoxPath string
+	xpiPath     string
+	profilePath string
+	cmd         *exec.Cmd
+	logFile     *os.File
 }
 
 func NewFirefoxDriver(firefoxPath string, xpiPath string) *FirefoxDriver {
@@ -254,7 +254,7 @@ func createTempProfile(xpiPath string, prefs map[string]interface{}) (string, er
 		}
 	}
 	fuserName := filepath.Join(profilePath, "user.js")
-	fuser, err := os.OpenFile(fuserName, os.O_WRONLY | os.O_CREATE, 0600)
+	fuser, err := os.OpenFile(fuserName, os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
 		return "", errors.New(cpferr + err.Error())
 	}
@@ -294,7 +294,7 @@ func writeExtensionFile(f *zip.File, extPath string) error {
 			return err
 		}
 	} else {
-		dst, err := os.OpenFile(filename, os.O_WRONLY | os.O_CREATE, 0600)
+		dst, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, 0600)
 		if err != nil {
 			return errors.New(weferr + err.Error())
 		}
