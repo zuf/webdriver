@@ -67,7 +67,11 @@ func (d *FirefoxDriver) SetLogPath(path string) {
 
 func (d *FirefoxDriver) Start() error {
 	if d.Port == 0 {
-		d.Port = GetFreePort()
+		var err error
+		d.Port, err = GetFreePort()
+		if err != nil {
+			return err
+		}
 	}
 
 	//start firefox with custom profile

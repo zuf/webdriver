@@ -54,7 +54,11 @@ func NewPhantomJsDriver(path string) *PhantomJsDriver {
 
 func (d *PhantomJsDriver) Start() error {
 	if d.Port == 0 {
-		d.Port = GetFreePort()
+		var err error
+		d.Port, err = GetFreePort()
+		if err != nil {
+			return err
+		}
 	}
 
 	csferr := "phantomJsdriver start failed: "

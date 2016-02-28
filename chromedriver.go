@@ -19,21 +19,21 @@ type ChromeSwitches map[string]interface{}
 type ChromeDriver struct {
 	WebDriverCore
 	//The port that ChromeDriver listens on. Default: 9515
-	Port int
+	Port         int
 	//The URL path prefix to use for all incoming WebDriver REST requests. Default: ""
-	BaseUrl string
+	BaseUrl      string
 	//The number of threads to use for handling HTTP requests. Default: 4
-	Threads int
+	Threads      int
 	//The path to use for the ChromeDriver server log. Default: ./chromedriver.log
-	LogPath string
+	LogPath      string
 	// Log file to dump chromedriver stdout/stderr. If "" send to terminal. Default: ""
-	LogFile string
+	LogFile      string
 	// Start method fails if Chromedriver doesn't start in less than StartTimeout. Default 20s.
 	StartTimeout time.Duration
 
-	path    string
-	cmd     *exec.Cmd
-	logFile *os.File
+	path         string
+	cmd          *exec.Cmd
+	logFile      *os.File
 }
 
 //create a new service using chromedriver.
@@ -57,7 +57,11 @@ var cmdchan = make(chan error)
 
 func (d *ChromeDriver) Start() error {
 	if d.Port == 0 {
-		d.Port = GetFreePort()
+		var err error
+		d.Port, err = GetFreePort()
+		if err != nil {
+			return err
+		}
 	}
 
 	csferr := "chromedriver start failed: "
@@ -67,7 +71,7 @@ func (d *ChromeDriver) Start() error {
 
 	if d.LogPath != "" {
 		//check if log-path is writable
-		file, err := os.OpenFile(d.LogPath, os.O_WRONLY|os.O_CREATE, 0664)
+		file, err := os.OpenFile(d.LogPath, os.O_WRONLY | os.O_CREATE, 0664)
 		if err != nil {
 			return errors.New(csferr + "unable to write in log path: " + err.Error())
 		}
@@ -76,11 +80,11 @@ func (d *ChromeDriver) Start() error {
 
 	d.url = fmt.Sprintf("http://127.0.0.1:%d%s", d.Port, d.BaseUrl)
 	var switches []string
-	switches = append(switches, "-port="+strconv.Itoa(d.Port))
-	switches = append(switches, "-log-path="+d.LogPath)
-	switches = append(switches, "-http-threads="+strconv.Itoa(d.Threads))
+	switches = append(switches, "-port=" + strconv.Itoa(d.Port))
+	switches = append(switches, "-log-path=" + d.LogPath)
+	switches = append(switches, "-http-threads=" + strconv.Itoa(d.Threads))
 	if d.BaseUrl != "" {
-		switches = append(switches, "-url-base="+d.BaseUrl)
+		switches = append(switches, "-url-base=" + d.BaseUrl)
 	}
 
 	d.cmd = exec.Command(d.path, switches...)
