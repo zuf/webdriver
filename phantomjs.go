@@ -123,7 +123,7 @@ func (d *PhantomJsDriver) Stop() error {
 	defer func() {
 		d.cmd = nil
 	}()
-	d.cmd.Process.Signal(os.Interrupt)
+	d.cmd.Process.Kill()
 	if d.logFile != nil {
 		d.logFile.Close()
 	}
