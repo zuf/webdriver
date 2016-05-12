@@ -53,6 +53,15 @@ func NewFirefoxDriver(firefoxPath string, xpiPath string) *FirefoxDriver {
 	return d
 }
 
+// Use for attach to already runned firefox instance.
+// For example - to selenium/standalone-firefox from docker
+// url - address of started firefox for attach
+// for example: http://selenium-standalone-firefox:4444/wd/hub
+func (d *FirefoxDriver) Attach(url string) error {
+	d.url = url
+	return nil
+}
+
 // Equivalent to setting the following firefox preferences to:
 // "webdriver.log.file": path/jsconsole.log
 // "webdriver.log.driver.file": path/driver.log
