@@ -57,7 +57,7 @@ func NewFirefoxDriver(firefoxPath string, xpiPath string) *FirefoxDriver {
 // For example - to selenium/standalone-firefox from docker
 // url - address of started firefox for attach
 // for example: http://selenium-standalone-firefox:4444/wd/hub
-func (d *FirefoxDriver) Attach(url string)error{
+func (d *FirefoxDriver) Attach(url string) error {
 	d.url = url
 	return nil
 }
