@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"os/exec"
 	"strconv"
@@ -105,11 +106,27 @@ func (d *ChromeDriver) Start() error {
 		if err != nil {
 			return err
 		}
-		go io.Copy(d.logFile, stdout)
-		go io.Copy(d.logFile, stderr)
+		go func() {
+			if _, err := io.Copy(d.logFile, stdout); err != nil {
+				log.Println(err)
+			}
+		}()
+		go func() {
+			if _, err := io.Copy(d.logFile, stderr); err != nil {
+				log.Println(err)
+			}
+		}()
 	} else {
-		go io.Copy(os.Stdout, stdout)
-		go io.Copy(os.Stderr, stderr)
+		go func() {
+			if _, err := io.Copy(os.Stdout, stdout); err != nil {
+				log.Println(err)
+			}
+		}()
+		go func() {
+			if _, err := io.Copy(os.Stderr, stderr); err != nil {
+				log.Println(err)
+			}
+		}()
 	}
 	if err = probePort(d.Port, d.StartTimeout); err != nil {
 		return err
@@ -124,9 +141,13 @@ func (d *ChromeDriver) Stop() error {
 	defer func() {
 		d.cmd = nil
 	}()
-	d.cmd.Process.Signal(os.Interrupt)
+	if err := d.cmd.Process.Signal(os.Interrupt); err != nil {
+		return err
+	}
 	if d.logFile != nil {
-		d.logFile.Close()
+		if err := d.logFile.Close(); err != nil {
+			return err
+		}
 	}
 	return nil
 }

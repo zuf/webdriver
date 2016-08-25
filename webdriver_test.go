@@ -70,7 +70,11 @@ func checkServer(t *testing.T) {
 	}
 	http.HandleFunc("/", handler)
 	addr = ln.Addr().String()
-	go http.Serve(ln, nil)
+	go func() {
+		if err := http.Serve(ln, nil); err != nil {
+			t.Fatal(err)
+		}
+	}()
 }
 
 func checkWebDriver(t *testing.T) {
