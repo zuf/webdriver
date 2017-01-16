@@ -134,13 +134,17 @@ func (d *PhantomJsDriver) Start() error {
 }
 
 func (d *PhantomJsDriver) Stop() error {
-	if d.cmd == nil {
-		return errors.New("stop failed: phantomJsdriver not running")
-	}
 	defer func() {
 		d.cmd = nil
 	}()
-	if err := d.cmd.Process.Signal(os.Interrupt); err != nil {
+	cmd := d.cmd
+	if cmd == nil {
+		return errors.New("stop failed: phantomJsdriver not running")
+	}
+	if cmd.Process == nil {
+		return errors.New("stop failed: process nil")
+	}
+	if err := cmd.Process.Signal(os.Interrupt); err != nil {
 		return err
 	}
 	if d.logFile != nil {
