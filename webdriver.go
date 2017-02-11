@@ -776,6 +776,13 @@ func (s Session) MoveTo(element WebElement, xoffset, yoffset int) error {
 	return err
 }
 
+//Move the mouse to the center of the specificed element.
+func (s Session) MoveToCenter(element WebElement) error {
+	p := params{"element": element.id}
+	_, _, err := s.wd.do(p, "POST", "/session/%s/moveto", s.Id)
+	return err
+}
+
 type MouseButton int
 
 const (
