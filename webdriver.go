@@ -73,8 +73,8 @@ type Size struct {
 }
 
 type Position struct {
-	X int
-	Y int
+	X float64
+	Y float64
 }
 
 type FindElementStrategy string
