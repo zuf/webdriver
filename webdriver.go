@@ -113,7 +113,7 @@ type Cookie struct {
 	Path   string
 	Domain string
 	Secure bool
-	Expiry int
+	Expiry float64
 }
 
 type GeoLocation struct {
@@ -422,6 +422,15 @@ func (s Session) GetCookies() ([]Cookie, error) {
 	var cookies []Cookie
 	err = json.Unmarshal(data, &cookies)
 	return cookies, err
+}
+
+//Retrieve raw cookies data visible to the current page.
+func (s Session) GetRawCookies() ([]byte, error) {
+	_, data, err := s.wd.do(nil, "GET", "/session/%s/cookie", s.Id)
+	if err != nil {
+		return nil, err
+	}
+	return data, err
 }
 
 //Set a cookie.
