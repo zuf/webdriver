@@ -108,12 +108,12 @@ type WebElement struct {
 }
 
 type Cookie struct {
-	Name   string
-	Value  string
-	Path   string
-	Domain string
-	Secure bool
-	Expiry float64
+	Name   string `json:"name"`
+	Value  string `json:"value"`
+	Path   string `json:"path"`
+	Domain string `json:"domain"`
+	Secure bool   `json:"secure"`
+	Expiry float64    `json:"expiry"`
 }
 
 type GeoLocation struct {
@@ -285,7 +285,7 @@ func (s Session) Screenshot() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	reader := bytes.NewBuffer(data[1 : len(data)-1])
+	reader := bytes.NewBuffer(data[1: len(data)-1])
 	decoder := base64.NewDecoder(base64.StdEncoding, reader)
 	return ioutil.ReadAll(decoder)
 }
